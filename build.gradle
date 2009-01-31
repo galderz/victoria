@@ -1,0 +1,12 @@
+usePlugin('java')
+
+sourceCompatibility = 1.5
+targetCompatibility = 1.5
+
+dependencies 
+{
+   addMavenStyleRepo('jboss', 'http://repository.jboss.org/maven2')
+   addMavenStyleRepo('local', 'file:///home/galder/.m2/repository')
+   compile "org.jboss.logging:jboss-logging-spi:2.0.5.GA"
+   compile "org.jboss.cache:jbosscache-core:3.0.3-SNAPSHOT"
+}
