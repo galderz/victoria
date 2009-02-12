@@ -19,23 +19,22 @@ public class CacheProxy
 {
    private static final Logger log = Logger.getLogger(CacheProxy.class);
    
-   /** Configuration */
-   private final BridgeConfiguration bridgeConfiguration;
+   private final BridgeConfiguration configuration;
 
-   /** Cache */
    private final Cache cache;
    
    private CacheNotificationsListener listener;
    
-   public CacheProxy(BridgeConfiguration bridgeConfiguration, Cache cache)
+   public CacheProxy(BridgeConfiguration configuration, Cache cache)
    {
-      this.bridgeConfiguration = bridgeConfiguration;
-      this.cache = cache;      
+      this.configuration = configuration;
+      this.cache = cache;
    }
    
-   public void create()
+   public void create() throws Exception
    {
-      listener = new CacheNotificationsListener(bridgeConfiguration);
+      listener = new CacheNotificationsListener(configuration);
+      listener.create(this);
       cache.addCacheListener(listener);
    }
    
@@ -46,10 +45,12 @@ public class CacheProxy
    
    public void stop()
    {
+      listener.stop();
    }
    
    public void destroy()
    {
       cache.removeCacheListener(listener);
+      listener.destroy();
    }   
 }

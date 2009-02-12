@@ -3,8 +3,11 @@ package org.victoria;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.jboss.cache.Cache;
 import org.jboss.cache.notifications.annotation.CacheListener;
+import org.jboss.cache.notifications.annotation.NodeModified;
 import org.jboss.cache.notifications.annotation.ViewChanged;
+import org.jboss.cache.notifications.event.NodeEvent;
 import org.jboss.cache.notifications.event.ViewChangedEvent;
 import org.jboss.logging.Logger;
 import org.jgroups.Address;
@@ -22,25 +25,58 @@ public class CacheNotificationsListener
    
    private final AtomicBoolean active = new AtomicBoolean(false);
    
-   private final BridgeConfiguration bridgeConfiguration;
+   private final BridgeConfiguration configuration;
+   
+   private BridgeReplicator replicator;
    
    private Address address;
    
-   public CacheNotificationsListener(BridgeConfiguration bridgeConfiguration)
+   public CacheNotificationsListener(BridgeConfiguration configuration)
    {
-      this.bridgeConfiguration = bridgeConfiguration;
+      this.configuration = configuration;
+   }
+   
+   public void create(CacheProxy proxy) throws Exception
+   {
+      replicator = new BridgeReplicator(configuration);
+      replicator.create(proxy);
+   }
+   
+   public void start() throws Exception
+   {
+      replicator.start();
+   }
+
+   public void stop()
+   {
+      // Note: Does not seem to get called at least when the node is brought down.
+      log.debug("Stopped being the coordinator so stop the inter cluster channel.");
+      replicator.stop();
+   }
+   
+   public void destroy()
+   {
+      replicator.destroy();
    }
    
    public void setAddress(Address address)
    {
       this.address = address;
    }
+   
+   @NodeModified
+   public void callback(NodeEvent e) throws Exception
+   {
+      if (active.get())
+      {
+         replicator.replicate(e);
+      }
+   }
 
    @ViewChanged
    public void viewChanged(ViewChangedEvent vce) throws Exception
    {
       View newView = vce.getNewView();
-      log.debug("View change " + newView);
 
       // When node is coordinator, the replicator is active
       boolean amICoordinator = isCoordinator(newView, address);
@@ -54,17 +90,17 @@ public class CacheNotificationsListener
       toBeOrNotToBeCoordinator(changed);
    }
    
-   protected void toBeOrNotToBeCoordinator(boolean changed)
+   protected void toBeOrNotToBeCoordinator(boolean changed) throws Exception
    {
       if (changed)
       {
          if (active.get())
          {
-            startReplicator();
+            start();
          }
          else
          {
-            stopReplicator();
+            stop();
          }
       }      
    }
@@ -81,17 +117,5 @@ public class CacheNotificationsListener
       
       log.trace("I'm not coordinator.");
       return false;
-   }
-   
-   protected void startReplicator()
-   {
-      
-   }
-   
-   protected void stopReplicator()
-   {
-      // Note: Does not seem to get called at least when the node is brought down.
-      log.debug("Stopped being the coordinator so stop the inter cluster channel.");
-      replicator.stop();
-   }
+   }   
 }

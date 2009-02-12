@@ -17,6 +17,8 @@ public class BridgeConfiguration extends Configuration
    private String clusterConfig;
    
    private URL jgroupsConfigFile;
+   
+   private String clusterName = "InterClusterBridge";
 
    @Override
    public String getClusterConfig()
@@ -27,6 +29,12 @@ public class BridgeConfiguration extends Configuration
    public URL getJgroupsConfigFile()
    {
       return jgroupsConfigFile;
+   }
+   
+   @Override
+   public String getClusterName()
+   {
+      return clusterName;
    }
 
    @Override
@@ -40,4 +48,10 @@ public class BridgeConfiguration extends Configuration
    {
       this.jgroupsConfigFile = jgroupsConfigFile;
    }
+
+   @Override
+   public void setClusterName(String clusterName)
+   {
+      this.clusterName = clusterName;
+   }   
 }

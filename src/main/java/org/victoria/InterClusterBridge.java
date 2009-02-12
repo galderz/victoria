@@ -10,22 +10,22 @@ import org.jboss.cache.Cache;
 public class InterClusterBridge
 {
    /** Configuration (Injected Dependency) */
-   private BridgeConfiguration bridgeConfiguration;
+   private BridgeConfiguration configuration;
 
    /** Cache (Injected Dependency) */
    private Cache cache;
 
    /** Cache proxy. */ 
-   private CacheProxy cacheProxy;
+   private CacheProxy proxy;
    
-   public BridgeConfiguration getBridgeConfiguration()
+   public BridgeConfiguration getConfiguration()
    {
-      return bridgeConfiguration;
+      return configuration;
    }
 
-   public void setBridgeConfiguration(BridgeConfiguration bridgeConfiguration)
+   public void setconfiguration(BridgeConfiguration configuration)
    {
-      this.bridgeConfiguration = bridgeConfiguration;
+      this.configuration = configuration;
    }
 
    public Cache getCache()
@@ -38,24 +38,24 @@ public class InterClusterBridge
       this.cache = cache;
    }
    
-   public void create()
+   public void create() throws Exception
    {
-      cacheProxy = new CacheProxy(bridgeConfiguration, cache);
-      cacheProxy.create();
+      proxy = new CacheProxy(configuration, cache);
+      proxy.create();
    }
    
    public void start()
    {
-      cacheProxy.start();
+      proxy.start();
    }
 
    public void stop()
    {
-      cacheProxy.stop();
+      proxy.stop();
    }
    
    public void destroy()
    {
-      cacheProxy.destroy();
+      proxy.destroy();
    }
 }
