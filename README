@@ -2,10 +2,23 @@
 Victoria -  JBoss Cache Across Data Centres 
 ========================================================
 
-- To clean, build production and test classes and generate eclipse files do: 
-gradle clean compile testCompile eclipse 
+- Do I need to install Gradle in advance to build Victoria?
 
-- WARNING, eclipse part will fail saying:
+No! The first time you execute gradlew/gradlew.bat, it will download gradle, 
+unzip it and use that gradle version. 
+
+- To clean, build production and test classes and generate eclipse files do:
+ 
+$ ./gradlew clean compile testCompile eclipse
+$ gradlew.bat clean compile testCompile eclipse
+
+- Why did I pull org.jboss.test package from jboss-test?
+
+To bring only the classes needed and avoid in AS test classes being brought 
+and the entire AS 5 as dependencies.  
+
+- WARNING: If you put jboss-test as test compile dependency, eclipse file 
+generation will fail with the following:
 
 :eclipseCp
 :: problems summary ::

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployment xmlns="urn:jboss:bean-deployer:2.0">
+
+   <bean name="CacheClusterA" class="org.jboss.cache.config.Configuration">
+      <property name="clusterName">CacheClusterA</property>
+      <property name="multiplexerStack">${jboss.default.jgroups.stack:udp}</property>
+      <property name="cacheModeString">REPL_SYNC</property>
+      <!-- We have no asynchronous notification listeners -->
+      <property name="listenerAsyncPoolSize">0</property>
+   </bean>
+   
+   <!-- bean name="CacheClusterA1" class="org.jboss.cache.config.Configuration">
+      <property name="clusterName"><inject bean="CacheClusterA-Template" property="clusterName"/></property>
+      <property name="multiplexerStack"><inject bean="CacheClusterA-Template" property="multiplexerStack"/></property>
+      <property name="cacheModeString"><inject bean="CacheClusterA-Template" property="cacheModeString"/></property>
+      <property name="listenerAsyncPoolSize"><inject bean="CacheClusterA-Template" property="listenerAsyncPoolSize"/></property>
+   </bean>
+   
+   <bean name="CacheClusterA2" class="org.jboss.cache.config.Configuration">
+      <property name="clusterName"><inject bean="CacheClusterA-Template" property="clusterName"/></property>
+      <property name="multiplexerStack"><inject bean="CacheClusterA-Template" property="multiplexerStack"/></property>
+      <property name="cacheModeString"><inject bean="CacheClusterA-Template" property="cacheModeString"/></property>
+      <property name="listenerAsyncPoolSize"><inject bean="CacheClusterA-Template" property="listenerAsyncPoolSize"/></property>
+   </bean -->
+   
+   <bean name="DefaultCacheFactory" class="org.jboss.cache.DefaultCacheFactory">      
+      <constructor factoryClass="org.jboss.cache.DefaultCacheFactory" factoryMethod="getInstance" />
+   </bean>
+
+   <bean name="CacheClusterA1" class="org.jboss.cache.Cache">
+      <constructor factoryMethod="createCache">
+          <factory bean="DefaultCacheFactory"/>
+          <parameter class="org.jboss.cache.config.Configuration"><inject bean="CacheClusterA"/></parameter>
+          <parameter class="boolean">false</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="CacheClusterA2" class="org.jboss.cache.Cache">
+      <constructor factoryMethod="createCache">
+          <factory bean="DefaultCacheFactory"/>
+          <parameter class="org.jboss.cache.config.Configuration"><inject bean="CacheClusterA"/></parameter>
+          <parameter class="boolean">false</parameter>
+      </constructor>
+   </bean>
+
+</deployment>
