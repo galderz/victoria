@@ -2,3 +2,31 @@
 Victoria -  JBoss Cache Across Data Centres 
 ========================================================
 
+- To clean, build production and test classes and generate eclipse files do: 
+gradle clean compile testCompile eclipse 
+
+- WARNING, eclipse part will fail saying:
+
+:eclipseCp
+:: problems summary ::
+:::: WARNINGS
+		[NOT FOUND  ] org.jboss.jbossas#jboss-as-j2se;5.0.0.CR2!jboss-as-j2se.test-jar (492ms)
+
+	==== jboss: tried
+
+	  http://repository.jboss.org/maven2/org/jboss/jbossas/jboss-as-j2se/5.0.0.CR2/jboss-as-j2se-5.0.0.CR2.test-jar
+
+- To get around it:
+
+- Open ~/.gradle/cache/org.jboss.jbossas/jboss-as-jmx/ivy-5.0.0.CR2.xml file and 
+change the following line:
+
+		<dependency org="org.jboss.jbossas" name="jboss-as-j2se" rev="5.0.0.CR2" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)">
+			<artifact name="jboss-as-j2se" type="test-jar" ext="test-jar" conf=""/>
+ 		</dependency>
+ 		
+so that it looks like this:
+
+      <dependency org="org.jboss.jbossas" name="jboss-as-j2se" rev="5.0.0.CR2" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)">
+         <artifact name="jboss-as-j2se" type="test-jar" ext="jar" conf="tests" m:classifier="tests"/>
+      </dependency> 		  

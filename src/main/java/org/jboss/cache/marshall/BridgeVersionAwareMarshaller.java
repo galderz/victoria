@@ -1,5 +1,7 @@
 package org.jboss.cache.marshall;
 
+import org.jboss.cache.factories.ComponentRegistry;
+
 /**
  * BridgeVersionAwareMarshaller.
  * 
@@ -7,5 +9,9 @@ package org.jboss.cache.marshall;
  */
 public class BridgeVersionAwareMarshaller extends VersionAwareMarshaller
 {
+   public BridgeVersionAwareMarshaller()
+   {
+      injectComponents(new ComponentRegistry(null, null));
+   }
 
 }

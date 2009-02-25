@@ -4,6 +4,10 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.jboss.cache.Cache;
+import org.jboss.cache.commands.ReplicableCommand;
+import org.jboss.cache.commands.write.PutDataMapCommand;
+import org.jboss.cache.commands.write.RemoveKeyCommand;
+import org.jboss.cache.commands.write.RemoveNodeCommand;
 import org.jboss.cache.notifications.annotation.ViewChanged;
 import org.jboss.cache.notifications.event.ViewChangedEvent;
 import org.jboss.logging.Logger;
@@ -52,5 +56,24 @@ public class CacheProxy
    {
       cache.removeCacheListener(listener);
       listener.destroy();
-   }   
+   }
+   
+   public Object execute(ReplicableCommand cmd)
+   {
+      if (cmd instanceof PutDataMapCommand)
+      {
+         PutDataMapCommand putDataCmd = (PutDataMapCommand)cmd;
+         cache.put(putDataCmd.getFqn(), putDataCmd.getData());
+         return null;
+      }
+      else if (cmd instanceof RemoveKeyCommand)
+      {
+         RemoveKeyCommand removeKeyCmd = (RemoveKeyCommand)cmd;
+         return cache.remove(removeKeyCmd.getFqn(), removeKeyCmd.getKey());
+      }
+      else
+      {
+         throw new RuntimeException("Non implemented command: " + cmd);
+      }
+   }
 }

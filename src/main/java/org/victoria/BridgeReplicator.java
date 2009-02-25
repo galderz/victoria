@@ -4,6 +4,7 @@ import java.net.URL;
 
 import org.jboss.cache.marshall.BridgeVersionAwareMarshaller;
 import org.jboss.cache.marshall.Marshaller;
+import org.jboss.cache.marshall.VersionAwareMarshaller;
 import org.jboss.cache.notifications.event.NodeEvent;
 import org.jboss.logging.Logger;
 import org.jgroups.Channel;
@@ -57,7 +58,8 @@ public class BridgeReplicator
       channel.setOpt(Channel.BLOCK, true);
       
       rpcDispatcher = new BridgeRpcDispatcher(channel, proxy);
-      Marshaller marshaller = new BridgeVersionAwareMarshaller();
+      VersionAwareMarshaller marshaller = new BridgeVersionAwareMarshaller();
+      marshaller.initReplicationVersions();
       rpcDispatcher.setRequestMarshaller(marshaller);
       rpcDispatcher.setResponseMarshaller(marshaller);
    }
