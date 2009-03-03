@@ -3,22 +3,43 @@ Victoria -  JBoss Cache Across Data Centres
 ========================================================
 
 - Do I need to install Gradle in advance to build Victoria?
-
+-----------------------------------------------------------
 No! The first time you execute gradlew/gradlew.bat, it will download gradle, 
-unzip it and use that gradle version. 
+unzip it and use that gradle version. So, to start do the following:
 
-- To clean, build production and test classes and generate eclipse files do:
- 
-$ ./gradlew clean compile testCompile eclipse
-$ gradlew.bat clean compile testCompile eclipse
+Linux/Unix: sh gradlew testCompile
+Windows: gradlew.bat testCompile
+
+- How to import Victoria into Eclipse?
+--------------------------------------
+After doing testCompile, call so that Eclipse project and classpath files are generated:
+
+Linux/Unix: sh gradlew eclipse
+Windows: gradlew.bat eclipse
+
+- How to import Victoria into IntelliJ?
+---------------------------------------
+Unfortunately, Gradle does not yet support IntelliJ project file generation 
+(see http://jira.codehaus.org/browse/GRADLE-190), so to help IntelliJ users, I've
+added IntelliJ project files at the root of Victoria.
+
+However, these project files cannot be used just like that. Gradle downloads Victoria's
+dependency jars to a folder called ~/.gradle, so victoria.iml needs to be modified so 
+that the distance between the folder to which Victoria was cloned and ~/.gradle it's the 
+correct one.
+
+- How to clean Victoria?
+------------------------
+Linux/Unix: sh gradlew clean
+Windows: gradlew.bat clean
 
 - Why did I pull org.jboss.test package from jboss-test?
-
+--------------------------------------------------------
 To bring only the classes needed and avoid in AS test classes being brought 
 and the entire AS 5 as dependencies.  
 
-- WARNING: If you put jboss-test as test compile dependency, eclipse file 
-generation will fail with the following:
+WARNING: If you put jboss-test as test compile dependency, eclipse file 
+generation will fail with the following (http://jira.codehaus.org/browse/GRADLE-415):
 
 :eclipseCp
 :: problems summary ::
@@ -29,17 +50,17 @@ generation will fail with the following:
 
 	  http://repository.jboss.org/maven2/org/jboss/jbossas/jboss-as-j2se/5.0.0.CR2/jboss-as-j2se-5.0.0.CR2.test-jar
 
-- To get around it:
+To get around it:
 
-- Open ~/.gradle/cache/org.jboss.jbossas/jboss-as-jmx/ivy-5.0.0.CR2.xml file and 
+Open ~/.gradle/cache/org.jboss.jbossas/jboss-as-jmx/ivy-5.0.0.CR2.xml file and 
 change the following line:
 
-		<dependency org="org.jboss.jbossas" name="jboss-as-j2se" rev="5.0.0.CR2" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)">
-			<artifact name="jboss-as-j2se" type="test-jar" ext="test-jar" conf=""/>
- 		</dependency>
+<dependency org="org.jboss.jbossas" name="jboss-as-j2se" rev="5.0.0.CR2" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)">
+   <artifact name="jboss-as-j2se" type="test-jar" ext="test-jar" conf=""/>
+</dependency>
  		
 so that it looks like this:
 
-      <dependency org="org.jboss.jbossas" name="jboss-as-j2se" rev="5.0.0.CR2" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)">
-         <artifact name="jboss-as-j2se" type="test-jar" ext="jar" conf="tests" m:classifier="tests"/>
-      </dependency> 		  
+<dependency org="org.jboss.jbossas" name="jboss-as-j2se" rev="5.0.0.CR2" force="true" conf="compile->compile(*),master(*);runtime->runtime(*)">
+  <artifact name="jboss-as-j2se" type="test-jar" ext="jar" conf="tests" m:classifier="tests"/>
+</dependency> 		  
