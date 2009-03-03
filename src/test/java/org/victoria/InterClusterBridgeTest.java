@@ -18,9 +18,12 @@ public class InterClusterBridgeTest extends MicrocontainerTest
    public void testOne()
    {
       Cache cacheA1 = (Cache)getBean("CacheClusterA1");
-      // Cache cacheA2 = (Cache)getBean("CacheClusterA2");
+//      Cache cacheA2 = (Cache)getBean("CacheClusterA2");
       
-      System.out.println(cacheA1);
-      // System.out.println(cacheA2);
+      System.out.println("CacheA1 members: " + cacheA1.getMembers());
+      System.out.println("CacheA1 contents: " + cacheA1);
+
+//      System.out.println("CacheA2 members: " + cacheA2.getMembers());
+//      System.out.println("CacheA2 contents: " + cacheA2);
    }
 }
