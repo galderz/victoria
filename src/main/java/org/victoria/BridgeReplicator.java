@@ -34,7 +34,7 @@ public class BridgeReplicator
    {
       if (configuration.getJgroupsConfigFile() != null)
       {
-         URL url = configuration.getJGroupsConfigFile();
+         URL url = configuration.getJgroupsConfigFile();
          if (log.isTraceEnabled())
          {
             log.trace("Taking cluster configuration from " + url);

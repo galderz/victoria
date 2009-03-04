@@ -6,41 +6,15 @@
       <constructor factoryClass="org.jboss.cache.DefaultCacheFactory" factoryMethod="getInstance" />
    </bean>
 
-   <!-- bean name="ConfCacheClusterA" class="org.jboss.cache.config.Configuration">
-      <property name="clusterName">CacheClusterA</property>
-      <property name="multiplexerStack">${jboss.default.jgroups.stack:udp}</property>
-      <property name="cacheModeString">REPL_SYNC</property>
-      <property name="listenerAsyncPoolSize">0</property>
-   </bean -->
-
-   <bean name="ConfCacheClusterA" class="org.jboss.cache.config.Configuration">
+   <!-- Cluster A -->
+    
+   <bean name="ConfCacheClusterA1" class="org.jboss.cache.config.Configuration">
       <property name="clusterName">CacheClusterA</property>
       <property name="jgroupsConfigFile">src/test/resources/jgroups/udpA.xml</property>
-      <!--  property name="multiplexerStack">${jboss.default.jgroups.stack:udp}</property -->
       <property name="cacheModeString">REPL_SYNC</property>
       <property name="listenerAsyncPoolSize">0</property>
    </bean>
-   
-   <!--  bean name="ConfCacheClusterA2" class="org.jboss.cache.config.Configuration">
-      <property name="clusterName">CacheClusterA</property>
-      <property name="multiplexerStack">${jboss.default.jgroups.stack:udp}</property>
-      <property name="cacheModeString">REPL_SYNC</property>
-      <property name="listenerAsyncPoolSize">0</property>
-   </bean -->
-
-   <!-- bean name="ConfCacheClusterA2" class="org.jboss.cache.config.Configuration">
-      <property name="clusterName"><inject bean="ConfCacheClusterA1" property="clusterName"/></property>
-      <property name="multiplexerStack"><inject bean="ConfCacheClusterA1" property="multiplexerStack"/></property>
-      <property name="cacheModeString"><inject bean="ConfCacheClusterA1" property="cacheModeString"/></property>
-      <property name="listenerAsyncPoolSize"><inject bean="ConfCacheClusterA1" property="listenerAsyncPoolSize"/></property>
-   </bean -->
-
-   <bean name="ConfCacheClusterA1" class="org.jboss.cache.config.Configuration">
-      <constructor factoryMethod="clone">
-         <factory bean="ConfCacheClusterA"/>
-      </constructor>
-   </bean>   
-   
+  
    <bean name="CacheClusterA1" class="org.jboss.cache.Cache">
       <constructor factoryMethod="createCache">
           <factory bean="DefaultCacheFactory"/>
@@ -48,11 +22,19 @@
           <parameter class="boolean">false</parameter>
       </constructor>
    </bean>
+   
+   <bean name="ConfBridgeClusterA1" class="org.victoria.BridgeConfiguration">
+      <property name="clusterName">BridgeClusterA</property>
+      <property name="jgroupsConfigFile">src/test/resources/jgroups/tcpA.xml</property>
+   </bean>
 
-   <!--  bean name="ConfCacheClusterA2" class="org.jboss.cache.config.Configuration">
-      <constructor factoryMethod="clone">
-         <factory bean="ConfCacheClusterA"/>
-      </constructor>
+   <bean name="BridgeA1" class="org.victoria.InterClusterBridge">
+      <property name="configuration"><inject bean="ConfBridgeClusterA1"/></property>
+      <property name="cache"><inject bean="CacheClusterA1"/></property>
+   </bean>
+
+   <bean name="ConfCacheClusterA2" class="org.jboss.cache.config.Configuration">
+      <constructor factoryMethod="clone"><factory bean="ConfCacheClusterA1"/></constructor>
    </bean>   
 
    <bean name="CacheClusterA2" class="org.jboss.cache.Cache">
@@ -61,6 +43,73 @@
           <parameter class="org.jboss.cache.config.Configuration"><inject bean="ConfCacheClusterA2"/></parameter>
           <parameter class="boolean">false</parameter>
       </constructor>
-   </bean -->
+   </bean>
+   
+   <bean name="ConfBridgeClusterA2" class="org.victoria.BridgeConfiguration">
+      <constructor factoryMethod="clone"><factory bean="ConfBridgeClusterA1"/></constructor>
+   </bean>
+   
+   <bean name="BridgeA2" class="org.victoria.InterClusterBridge">
+      <property name="configuration"><inject bean="ConfBridgeClusterA2"/></property>
+      <property name="cache"><inject bean="CacheClusterA2"/></property>
+   </bean>
+   
+   <!-- Cluster B -->
+   
+   <bean name="ConfCacheClusterB1" class="org.jboss.cache.config.Configuration">
+      <property name="clusterName">CacheClusterB</property>
+      <property name="jgroupsConfigFile">src/test/resources/jgroups/udpB.xml</property>
+      <property name="cacheModeString">REPL_SYNC</property>
+      <property name="listenerAsyncPoolSize">0</property>
+   </bean>
+   
+   <bean name="CacheClusterB1" class="org.jboss.cache.Cache">
+      <constructor factoryMethod="createCache">
+          <factory bean="DefaultCacheFactory"/>
+          <parameter class="org.jboss.cache.config.Configuration"><inject bean="ConfCacheClusterB1"/></parameter>
+          <parameter class="boolean">false</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="ConfCacheClusterB2" class="org.jboss.cache.config.Configuration">
+      <constructor factoryMethod="clone"><factory bean="ConfCacheClusterB1"/></constructor>
+   </bean>   
+
+   <bean name="CacheClusterB2" class="org.jboss.cache.Cache">
+      <constructor factoryMethod="createCache">
+          <factory bean="DefaultCacheFactory"/>
+          <parameter class="org.jboss.cache.config.Configuration"><inject bean="ConfCacheClusterB2"/></parameter>
+          <parameter class="boolean">false</parameter>
+      </constructor>
+   </bean>
+
+   <!-- Cluster C -->
+   
+   <bean name="ConfCacheClusterC1" class="org.jboss.cache.config.Configuration">
+      <property name="clusterName">CacheClusterC</property>
+      <property name="jgroupsConfigFile">src/test/resources/jgroups/udpC.xml</property>
+      <property name="cacheModeString">REPL_SYNC</property>
+      <property name="listenerAsyncPoolSize">0</property>
+   </bean>
+   
+   <bean name="CacheClusterC1" class="org.jboss.cache.Cache">
+      <constructor factoryMethod="createCache">
+          <factory bean="DefaultCacheFactory"/>
+          <parameter class="org.jboss.cache.config.Configuration"><inject bean="ConfCacheClusterC1"/></parameter>
+          <parameter class="boolean">false</parameter>
+      </constructor>
+   </bean>
+
+   <bean name="ConfCacheClusterC2" class="org.jboss.cache.config.Configuration">
+      <constructor factoryMethod="clone"><factory bean="ConfCacheClusterC1"/></constructor>
+   </bean>   
+
+   <bean name="CacheClusterC2" class="org.jboss.cache.Cache">
+      <constructor factoryMethod="createCache">
+          <factory bean="DefaultCacheFactory"/>
+          <parameter class="org.jboss.cache.config.Configuration"><inject bean="ConfCacheClusterC2"/></parameter>
+          <parameter class="boolean">false</parameter>
+      </constructor>
+   </bean>   
    
 </deployment>
