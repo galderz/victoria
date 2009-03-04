@@ -3,30 +3,30 @@ usePlugin('java')
 sourceCompatibility = 1.5
 targetCompatibility = 1.5
 
-createTask('wrapper', type: Wrapper).configure 
-{
-  gradleVersion = '0.5.2'
-}
+createTask('wrapper', type: Wrapper).configure {  gradleVersion = '0.5.2' }
 
 dependencies 
 {
-   // addMavenStyleRepo('local', 'file:///home/galder/.m2/repository')
-
+//   addMavenStyleRepo('local', 'file:///home/galder/.m2/repository')
+//   addMavenStyleRepo('jboss-snapshots', 'http://snapshots.jboss.org/maven2')
    addMavenStyleRepo('jboss', 'http://repository.jboss.org/maven2')
 
    compile "org.jboss.microcontainer:jboss-microcontainer:2.0.4.GA",
-           "org.jboss.logging:jboss-logging-spi:2.0.5.GA",
-           "org.jboss.cache:jbosscache-core:3.0.3.GA",
-           "jgroups:jgroups:2.6.7.GA"
+      "org.jboss.logging:jboss-logging-spi:2.0.5.GA",
+      "org.jboss.cache:jbosscache-core:3.0.3.GA",
+//      "org.jboss.cache:jbosscache-core:3.1.0-SNAPSHOT",
+      "jgroups:jgroups:2.6.7.GA"
 
    testCompile "org.jboss.microcontainer:jboss-kernel:2.0.4.GA",
-               "org.jboss:jboss-common-core:2.2.7.GA",
-               "org.jboss.logging:jboss-logging-log4j:2.0.5.GA",
-               "apache-log4j:log4j:1.2.14",
-               "junit:junit:3.8.1"
+      "org.jboss:jboss-common-core:2.2.7.GA",
+      "org.jboss.logging:jboss-logging-log4j:2.0.5.GA",
+      "apache-log4j:log4j:1.2.14",
+      "junit:junit:3.8.1"
 }
 
 test 
 {
-   options.fork(forkMode: ForkMode.PER_TEST, jvmArgs: ["-Dlog4j.configuration=file:/home/galder/jboss/others/logging/log4j/log4j-jboss.xml"])
+// Uncomment when you wanna run the testsuite passing a log4j configuration.
+//   options.fork(forkMode: ForkMode.PER_TEST, 
+//      jvmArgs: ["-Dlog4j.configuration=file:/home/galder/jboss/others/logging/log4j/log4j-jboss.xml"])
 }
